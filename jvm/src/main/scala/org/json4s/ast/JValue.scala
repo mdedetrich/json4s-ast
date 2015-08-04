@@ -44,6 +44,25 @@ case object JFalse extends JBoolean {
   def get = false
 }
 
+object JObject {
+
+  /**
+   * Create a [[JObject]] whose fields maintain insertion iteration order.
+   *
+   * The map that backs this JObject will have the same iteration order as the passed in vector.
+   *
+   * Some operations on the map will maintain the iteration order, these include the methods defined by
+   * [[scala.collection.immutable.MapLike]], such as [[scala.collection.immutable.MapLike.+]] and
+   * [[scala.collection.immutable.MapLike.++]]. Other operations will lose the iteration order, particularly the
+   * methods defined by [[scala.collection.GenTraversable]], like [[scala.collection.GenTraversable.map]] and
+   * [[scala.collection.GenTraversable.filter]].
+   *
+   * The performance characteristics of the map are amortized constant time for lookups and adding keys that didn't
+   * previously exist, while updating values for existing keys and removing keys take linear time.
+   */
+  def ordered(value: Vector[(String,JValue)] = Vector.empty): JObject = JObject(new InsertionOrderMap(value))
+}
+
 case class JObject(value: Map[String,JValue] = Map.empty) extends JValue
 
 object JArray {
